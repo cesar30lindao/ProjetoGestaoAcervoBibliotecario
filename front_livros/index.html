@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina de login</title>
+</head>
+
+<body>
+    <h1>Pagina de login</h1>
+    <form id="FormLogin">
+        <div class="form-container">
+            <input type="text" placeholder="E-mail" id="email">
+            <br><br>
+            <input type="password" placeholder="Senha" id="senha">
+            <br><br>
+            <button type="submit">Login</button>
+            <br><br>
+            <p id="mensagem"></p>
+        </div>
+    </form>
+
+    <script>
+        const API_BASE = "http://localhost/ProjetoGestaoAcervoBibliotecario/api_livros";
+
+        function getFormData() {
+            return {
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value
+            };
+        }
+
+
+        async function Login(user) {
+            try {
+                const resposta = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+                const dados = resposta.json();
+                if (!resposta.ok) {
+                    console.log(resposta);
+                    throw new Error(`HTTP: ${resposta.status} - ${resposta.message}`);
+                }
+                return dados;
+            } catch (erro) {
+                throw erro;
+            }
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById('FormLogin');
+            const msg = document.getElementById('mensagem');
+            const user = getFormData();
+            console.log(user);
+            try {
+                const resultado = await Login(user);
+                console.log(resultado);
+                if (resultado) {
+                    sessionStorage.setItem('usuario', JSON.stringify(resultado));
+                    windows.location.href = "principal.html";
+                } else {
+                    msg.textContent = "Usuario ou senha invalidos";
+                    msg.style.color = "red";
+                }
+            } catch (erro) {
+                msg.textContent = `Erro ao fazer login: ${erro}`;
+                msg.style.color = "red";
+            }
+
+
+        }
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("FormLogin").addEventListener("submit", handleFormSubmit);
+        });
+    </script>
+</body>
+
+</html>
