@@ -1,13 +1,12 @@
 <?php
 
-class UsuarioView{
-    public function exibirUsuario($usuario){
-        echo json_encode($usuario);
+class UsuarioView {
+
+    public function sendResponse($data, $statuscode){
+        http_response_code($statuscode);
+        echo json_encode($data);
     }
 
-    public function exibirErro($mensagem){
-        echo json_encode(['error' => $mensagem]);
-    }
 }
 
 ?>
